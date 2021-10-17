@@ -26,11 +26,11 @@ int main(int argc, char *argv[])
 	//htonl formatea el numero que recibe al formato necesario
 	serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
 	// escucharemos en el port 9050
-	serv_adr.sin_port = htons(9070);
+	serv_adr.sin_port = htons(9050);
 	if (bind(sock_listen, (struct sockaddr *) &serv_adr, sizeof(serv_adr)) < 0)
 		printf ("Error al bind");
 	//La cola de peticiones pendientes no podr? ser superior a 4
-	if (listen(sock_listen, 2) < 0)
+	if (listen(sock_listen, 3) < 0)
 		printf("Error en el Listen");
 	
 	int i;
@@ -64,12 +64,25 @@ int main(int argc, char *argv[])
 		
 		if (codigo ==1) //piden la longitd del nombre
 			sprintf (buff2,"%d",strlen (nombre));
-		else
+		else if (codigo==2)
 			// quieren saber si el nombre es bonito
 			if((nombre[0]=='M') || (nombre[0]=='S'))
-			strcpy (buff2,"SI");
+				strcpy (buff2,"SI");
 			else
 				strcpy (buff2,"NO");
+			else //decir si es alto
+			{
+				p = strtok( NULL, "/");
+				float altura =  atof (p);
+				if (altura > 1.70)
+				{
+					sprintf (respuesta,"%s: eres alto",nombre);
+				}
+				else
+				{
+				sprintf (respuesta,"%s: eres bajo",nombre);
+				}
+			}
 			
 			
 			printf ("%s\n", buff2);
